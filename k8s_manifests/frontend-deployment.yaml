@@ -27,7 +27,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://<BACKEND_ALB_DNS>/api/tasks"  # Replace with your backend ALB DNS after deploy: kubectl get ing -n workshop
+            value: "http://k8s-workshop-mainlb-b7f24ec5a6-426018586.eu-west-1.elb.amazonaws.com/api/tasks"
         ports:
         - containerPort: 3000
         # livenessProbe:
