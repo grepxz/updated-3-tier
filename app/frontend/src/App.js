@@ -59,7 +59,7 @@ class App extends Tasks {
                                     onClick={() => this.handleDelete(task._id)}
                                     color="secondary"
                                 >
-                                    delete
+                                    Delete
                                 </Button>
                             </Paper>
                         ))}

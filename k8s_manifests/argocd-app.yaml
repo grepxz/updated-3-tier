@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: workshop
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/grepxz/updated-3-tier
+    targetRevision: main
+    path: k8s_manifests
+    directory:
+      recurse: false
+      include: '{backend-deployment.yaml,backend-service.yaml,frontend-deployment.yaml,frontend-service.yaml,full_stack_lb.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: workshop
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

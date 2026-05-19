@@ -1,0 +1,56 @@
+name: Build and Push Images
+on:
+  push:
+    branches: [main]
+    paths: ['app/**']
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        service: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-actions-deploy
+          aws-region: eu-west-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build image
+        run: |
+          docker buildx build --platform linux/amd64 \
+            -t ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/workshop-${{ matrix.service }}:${{ github.sha }} \
+            --load \
+            app/${{ matrix.service }}
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/workshop-${{ matrix.service }}:${{ github.sha }}
+          format: table
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
+
+      - name: Push image
+        run: docker push ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/workshop-${{ matrix.service }}:${{ github.sha }}
+
+      - name: Update manifest tag
+        run: |
+          sed -i "s|workshop-${{ matrix.service }}:.*|workshop-${{ matrix.service }}:${{ github.sha }}|" \
+            k8s_manifests/${{ matrix.service }}-deployment.yaml
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add k8s_manifests/${{ matrix.service }}-deployment.yaml
+          git diff --cached --quiet || git commit -m "ci: bump ${{ matrix.service }} to ${{ github.sha }}"
+          git push
