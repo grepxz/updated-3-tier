@@ -11,7 +11,7 @@ class App extends Tasks {
         return (
             <div className="App flex">
                 <Paper elevation={3} className="container">
-                    <div className="heading">TO-DO</div>
+                    <div className="heading">TO-DO list</div>
                     <form
                         onSubmit={this.handleSubmit}
                         className="flex"
