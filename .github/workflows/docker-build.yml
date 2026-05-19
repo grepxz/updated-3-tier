@@ -45,12 +45,20 @@ jobs:
       - name: Push image
         run: docker push ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/workshop-${{ matrix.service }}:${{ github.sha }}
 
-      - name: Update manifest tag
+      - name: Update manifest tag (retry on race)
         run: |
-          sed -i "s|workshop-${{ matrix.service }}:.*|workshop-${{ matrix.service }}:${{ github.sha }}|" \
-            k8s_manifests/${{ matrix.service }}-deployment.yaml
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add k8s_manifests/${{ matrix.service }}-deployment.yaml
-          git diff --cached --quiet || git commit -m "ci: bump ${{ matrix.service }} to ${{ github.sha }}"
-          git push
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main
+            sed -i "s|workshop-${{ matrix.service }}:.*|workshop-${{ matrix.service }}:${{ github.sha }}|" \
+              k8s_manifests/${{ matrix.service }}-deployment.yaml
+            git add k8s_manifests/${{ matrix.service }}-deployment.yaml
+            git diff --cached --quiet && { echo "no changes"; exit 0; }
+            git commit -m "ci: bump ${{ matrix.service }} to ${{ github.sha }}"
+            git push && exit 0
+            echo "push race, retrying ($i/5)"
+            sleep $((RANDOM % 5 + 1))
+            git reset --hard origin/main
+          done
+          echo "failed after 5 retries"; exit 1
