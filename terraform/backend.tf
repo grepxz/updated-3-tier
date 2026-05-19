@@ -1,9 +1,5 @@
 terraform {
-  backend "s3" {
-    bucket = "sandip-demo-tfstate-bucket"
-    key    = "eks/terraform.tfstate"
-    region = "us-west-2"
-  }
+  # Partial config — actual values in backend.hcl (gitignored).
+  # Init with: terraform init -backend-config=backend.hcl
+  backend "s3" {}
 }
-
-

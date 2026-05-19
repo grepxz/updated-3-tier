@@ -4,18 +4,18 @@ variable "cluster_name" {
 }
 
 variable "cluster_version" {
-  type = number
-  default = 1.25
+  type = string
+  default = "1.30"
 }
 
 variable "region" {
   type = string
-  default = "us-west-2"
+  default = "eu-west-1"
 }
 
 variable "availability_zones" {
-  type = list
-  default = ["us-west-2a", "us-west-2b"]
+  type = list(string)
+  default = ["eu-west-1a", "eu-west-1b"]
 }
 
 

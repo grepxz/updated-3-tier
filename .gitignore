@@ -1,9 +1,26 @@
 # Local .terraform directories
 **/.terraform/*
+terraform/.terraform.lock.hcl
 
 # .tfstate files
 *.tfstate
 *.tfstate.*
+errored.tfstate
+
+# Terraform backend config (contains bucket name)
+terraform/backend.hcl
+
+# Real secrets (keep .example templates)
+k8s_manifests/mongo/secrets.yaml
+
+# AWS / TLS credentials
+**/credentials
+**/*.pem
+**/*.key
+!**/*.pub.key
+
+# macOS
+.DS_Store
 
 # Crash log files
 crash.log

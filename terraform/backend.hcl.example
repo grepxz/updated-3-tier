@@ -1,0 +1,3 @@
+bucket = "your-unique-tfstate-bucket-name"
+key    = "eks/terraform.tfstate"
+region = "eu-west-1"

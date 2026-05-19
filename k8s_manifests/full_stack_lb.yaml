@@ -10,8 +10,9 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: app.sandipdas.in
-      http:
+    # Remove the `host:` line to make this ALB match any hostname (easiest for demos).
+    # Or replace with your own domain after pointing DNS at the ALB.
+    - http:
         paths:
           - path: /api
             pathType: Prefix

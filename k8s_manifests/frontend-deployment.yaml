@@ -23,11 +23,11 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: public.ecr.aws/w8u5e4v2/workshop-frontend:v1
+        image: 428156589112.dkr.ecr.eu-west-1.amazonaws.com/workshop-frontend:v1
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://app.sandipdas.in/api/tasks" #$API_ELB_PUBLIC_FQDN #add your API_Load_Balancer DNS manually here if app does not run
+            value: "http://<BACKEND_ALB_DNS>/api/tasks"  # Replace with your backend ALB DNS after deploy: kubectl get ing -n workshop
         ports:
         - containerPort: 3000
         # livenessProbe:
