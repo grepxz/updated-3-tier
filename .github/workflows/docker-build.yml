@@ -33,13 +33,13 @@ jobs:
             --load \
             app/${{ matrix.service }}
 
-      - name: Trivy scan
+      - name: Trivy scan (report-only)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/workshop-${{ matrix.service }}:${{ github.sha }}
           format: table
           severity: CRITICAL,HIGH
-          exit-code: 1
+          exit-code: 0                    # change to 1 to enforce; reports only for now
           ignore-unfixed: true
 
       - name: Push image

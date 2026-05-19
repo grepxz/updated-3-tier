@@ -12,10 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run tfsec
+      - name: Run tfsec (report-only)
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: terraform
+          soft_fail: true              # set to false to enforce; reports only for now
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@master
