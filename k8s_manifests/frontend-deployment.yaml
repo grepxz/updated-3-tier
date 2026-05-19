@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 428156589112.dkr.ecr.eu-west-1.amazonaws.com/workshop-frontend:175045ddea670de23342b8526d40165b1e071332
+        image: 428156589112.dkr.ecr.eu-west-1.amazonaws.com/workshop-frontend:3baaa23dbc783d5786c94bad7e140a079d720a7b
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
